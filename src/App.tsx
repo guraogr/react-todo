@@ -1,18 +1,51 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
 
-const App = () => (
-  <div className="App">
-    <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <p>
-        Edit <code>src/App.tsx</code> and save to reload.
-      </p>
-      <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-        Learn React
-      </a>
-    </header>
-  </div>
-);
+interface Todo {
+  value: string;
+  readonly id: number;
+}
+
+const App = () => {
+  const [text, setText] = useState<string>('');
+  const [todos, setTodos] = useState<Todo[]>([]);
+
+  const handleOnSubmit = () => {
+    if (!text) return;
+
+    const newTodo: Todo = {
+      value: text,
+      id: new Date().getTime(),
+    };
+
+    setTodos([newTodo, ...todos]);
+    setText('');
+  };
+
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setText(e.target.value);
+  };
+
+  return (
+    <div className="App">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleOnSubmit();
+        }}
+      >
+        <input type="text" value={text} onChange={(e) => handleOnChange(e)} />
+        <input type="submit" value="追加" onSubmit={(e) => e.preventDefault()} />
+      </form>
+      <ul>
+        {todos.map((todo) => (
+          <li key={todo.id}>
+            <input type="text" value={todo.value} onChange={(e) => e.preventDefault()} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 export default App;
