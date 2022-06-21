@@ -5,6 +5,7 @@ interface Todo {
   value: string;
   readonly id: number;
   checked: boolean;
+  removed: boolean;
 }
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
       value: text,
       id: new Date().getTime(),
       checked: false,
+      removed: false,
     };
 
     setTodos([newTodo, ...todos]);
@@ -54,6 +56,19 @@ const App = () => {
     setTodos(newTodos);
   };
 
+  const handleOnRemove = (id: number, removed: boolean) => {
+    const deepCopy = todos.map((todo) => ({ ...todo }));
+
+    const newTodos = deepCopy.map((todo) => {
+      if (todo.id === id) {
+        return { ...todo, removed: !removed };
+      }
+      return todo;
+    });
+
+    setTodos(newTodos);
+  };
+
   return (
     <div className="App">
       <form
@@ -68,13 +83,21 @@ const App = () => {
       <ul>
         {todos.map((todo) => (
           <li key={todo.id}>
-            <input type="checkbox" checked={todo.checked} onChange={() => handleOnCheck(todo.id, todo.checked)} />
+            <input
+              type="checkbox"
+              checked={todo.checked}
+              disabled={todo.removed}
+              onChange={() => handleOnCheck(todo.id, todo.checked)}
+            />
             <input
               type="text"
               value={todo.value}
               onChange={(e) => handleOnEdit(todo.id, e.target.value)}
-              disabled={todo.checked}
+              disabled={todo.checked || todo.removed}
             />
+            <button type="button" onClick={() => handleOnRemove(todo.id, todo.removed)}>
+              {todo.removed ? '復元' : '削除'}
+            </button>
           </li>
         ))}
       </ul>
