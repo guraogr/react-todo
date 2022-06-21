@@ -1,25 +1,8 @@
 # 概要
 
-React TypeScript の開発環境を作成した
+## Todo リストを React + TS で作成する
 
-## 環境作成の内訳
+目的: TODO リストを通して、React + TS でロジックを書くスキルを高める
+なぜやるのか：ロジックを書くスキルが低いため
 
-### create-react-app
-
-```
-npx create-react-app react-tutorial-tic-tac-toe --template typescript
-```
-
-## 導入ライブラリ
-
-### ESlint
-
-### Prettier
-
-### CommitLint
-
-### Storybook
-
-### Husky
-
-###
+参考チュートリアル：https://zenn.dev/sprout2000/articles/60cc8f1aa08b4b
