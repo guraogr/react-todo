@@ -33,7 +33,7 @@ const App = () => {
 
     const newTodos = deepCopy.map((todo) => {
       if (todo.id === id) {
-        return { id: todo.id, value, checked: todo.checked };
+        return { ...todo, value };
       }
       return todo;
     });
@@ -46,7 +46,7 @@ const App = () => {
 
     const newTodos = deepCopy.map((todo) => {
       if (todo.id === id) {
-        return { id: todo.id, value: todo.value, checked: !checked };
+        return { ...todo, checked: !checked };
       }
       return todo;
     });
