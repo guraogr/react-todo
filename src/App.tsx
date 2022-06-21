@@ -8,9 +8,13 @@ interface Todo {
   removed: boolean;
 }
 
+type Filter = 'all' | 'checked' | 'unchecked' | 'removed';
+
 const App = () => {
   const [text, setText] = useState<string>('');
   const [todos, setTodos] = useState<Todo[]>([]);
+
+  const [filter, setFilter] = useState<Filter>('all');
 
   const handleOnSubmit = () => {
     if (!text) return;
@@ -69,19 +73,53 @@ const App = () => {
     setTodos(newTodos);
   };
 
+  const filteredTodos = todos.filter((todo) => {
+    switch (filter) {
+      case 'all':
+        // 削除されていないもの全て
+        return !todo.removed;
+      case 'checked':
+        // 完了済みかつ削除されていないもの
+        return todo.checked && !todo.removed;
+      case 'unchecked':
+        // 未完了かつ削除されていないもの
+        return !todo.checked && !todo.removed;
+      case 'removed':
+        return todo.removed;
+      default:
+        return todo;
+    }
+  });
+
   return (
     <div className="App">
+      <select defaultValue="all" onChange={(e) => setFilter(e.target.value as Filter)}>
+        <option value="all">すべてのタスク</option>
+        <option value="checked">完了したタスク</option>
+        <option value="unchecked">現在のタスク</option>
+        <option value="removed">ごみ箱</option>
+      </select>
       <form
         onSubmit={(e) => {
           e.preventDefault();
           handleOnSubmit();
         }}
       >
-        <input type="text" value={text} onChange={(e) => handleOnChange(e)} />
-        <input type="submit" value="追加" onSubmit={(e) => e.preventDefault()} />
+        <input
+          type="text"
+          value={text}
+          onChange={(e) => handleOnChange(e)}
+          disabled={filter === 'checked' || filter === 'removed'}
+        />
+        <input
+          type="submit"
+          value="追加"
+          onSubmit={(e) => e.preventDefault()}
+          disabled={filter === 'checked' || filter === 'removed'}
+        />
       </form>
       <ul>
-        {todos.map((todo) => (
+        {filteredTodos.map((todo) => (
           <li key={todo.id}>
             <input
               type="checkbox"
