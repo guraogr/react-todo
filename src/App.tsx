@@ -4,6 +4,7 @@ import './App.css';
 interface Todo {
   value: string;
   readonly id: number;
+  checked: boolean;
 }
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
     const newTodo: Todo = {
       value: text,
       id: new Date().getTime(),
+      checked: false,
     };
 
     setTodos([newTodo, ...todos]);
@@ -24,6 +26,32 @@ const App = () => {
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value);
+  };
+
+  const handleOnEdit = (id: number, value: string) => {
+    const deepCopy = todos.map((todo) => ({ ...todo }));
+
+    const newTodos = deepCopy.map((todo) => {
+      if (todo.id === id) {
+        return { id: todo.id, value, checked: todo.checked };
+      }
+      return todo;
+    });
+
+    setTodos(newTodos);
+  };
+
+  const handleOnCheck = (id: number, checked: boolean) => {
+    const deepCopy = todos.map((todo) => ({ ...todo }));
+
+    const newTodos = deepCopy.map((todo) => {
+      if (todo.id === id) {
+        return { id: todo.id, value: todo.value, checked: !checked };
+      }
+      return todo;
+    });
+
+    setTodos(newTodos);
   };
 
   return (
@@ -40,7 +68,13 @@ const App = () => {
       <ul>
         {todos.map((todo) => (
           <li key={todo.id}>
-            <input type="text" value={todo.value} onChange={(e) => e.preventDefault()} />
+            <input type="checkbox" checked={todo.checked} onChange={() => handleOnCheck(todo.id, todo.checked)} />
+            <input
+              type="text"
+              value={todo.value}
+              onChange={(e) => handleOnEdit(todo.id, e.target.value)}
+              disabled={todo.checked}
+            />
           </li>
         ))}
       </ul>
