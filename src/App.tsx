@@ -1,19 +1,10 @@
 import React, { useState } from 'react';
 import './App.css';
-
-interface Todo {
-  value: string;
-  readonly id: number;
-  checked: boolean;
-  removed: boolean;
-}
-
-type Filter = 'all' | 'checked' | 'unchecked' | 'removed';
+import { Filter, Todo } from './type/todo';
 
 const App = () => {
   const [text, setText] = useState<string>('');
   const [todos, setTodos] = useState<Todo[]>([]);
-
   const [filter, setFilter] = useState<Filter>('all');
 
   const handleOnSubmit = () => {
@@ -73,6 +64,11 @@ const App = () => {
     setTodos(newTodos);
   };
 
+  const handleOnEmpty = () => {
+    const newTodos = todos.filter((todo) => !todo.removed);
+    setTodos(newTodos);
+  };
+
   const filteredTodos = todos.filter((todo) => {
     switch (filter) {
       case 'all':
@@ -90,11 +86,6 @@ const App = () => {
         return todo;
     }
   });
-
-  const handleOnEmpty = () => {
-    const newTodos = todos.filter((todo) => !todo.removed);
-    setTodos(newTodos);
-  };
 
   return (
     <div className="App">
@@ -121,7 +112,6 @@ const App = () => {
           </form>
         )
       )}
-
       <ul>
         {filteredTodos.map((todo) => (
           <li key={todo.id}>
